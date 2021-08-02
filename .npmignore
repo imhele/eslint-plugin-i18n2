@@ -1,0 +1,24 @@
+# dependencies
+/node_modules
+/npm-debug.log*
+/wc-bundler.log*
+
+# source code
+/src
+
+# misc
+.DS_Store
+
+# local
+*.local.*
+
+# config
+/.editorconfig
+/.eslintrc.json
+/.gitignore
+/.npmrc
+/.prettierignore
+/.prettierrc
+/.wc-bundlerrc.ts
+/pnpm-lock.yaml
+/tsconfig.json
