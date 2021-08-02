@@ -27,8 +27,6 @@
     "node": true
   },
   "rules": {
-    "global-require": "off",
-    "no-console": "off",
     "no-empty": "off",
     "no-unused-vars": "error",
     "no-var": "error",
