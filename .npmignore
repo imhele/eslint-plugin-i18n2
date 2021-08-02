@@ -5,6 +5,7 @@
 
 # source code
 /src
+/scripts/internal
 
 # misc
 .DS_Store
