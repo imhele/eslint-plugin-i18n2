@@ -1,4 +1,4 @@
-import type { Rule } from 'eslint';
+import type { Rule, Scope } from 'eslint';
 import type ESTree from 'estree';
 import { memoizeWithWeakMap } from '../utils';
 
@@ -40,7 +40,6 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
     ],
   },
   create(context) {
-    const { scopeManager } = context.getSourceCode();
     const config: NoTopLevelTranslationConfig = context.options[0] || {};
     const translatorPatternList = (config.translator ?? ['i18next.t']).map((item) =>
       item.split('.'),
@@ -81,7 +80,7 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
 
     function CallExpression(node: ESTree.CallExpression): void {
       // 跳过非顶层 scope 的所有函数调用的检查
-      if (isInsideFunctionScope(node)) return;
+      if (isInsideFunctionScope(context.getScope())) return;
       // 如果不是翻译调用，则忽略
       if (!isTranslator(node.callee)) return;
 
@@ -106,12 +105,11 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
     /**
      * 判断 node 所在的 scope 是否在 function 内部。
      */
-    function isInsideFunctionScope(node: ESTree.Node): boolean {
-      let currentScope = scopeManager.acquire(node);
+    function isInsideFunctionScope(scope: Scope.Scope): boolean {
+      let currentScope: Scope.Scope | null = scope;
 
-      if (currentScope)
-        do if (currentScope.type === 'function') return true;
-        while ((currentScope = currentScope.upper));
+      do if (currentScope.type === 'function') return true;
+      while ((currentScope = currentScope.upper));
 
       return false;
     }
