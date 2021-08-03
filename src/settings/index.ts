@@ -16,14 +16,28 @@ export interface ESLintI18n2Settings {
    * ```
    */
   translator?: readonly string[] | undefined;
+  /**
+   * 符合此正则表达式的字符都将被视为未翻译。
+   *
+   * 传入字符串会被直接转为正则表达式。
+   *
+   * @default
+   * /[^\x00-\x7F]/
+   */
+  untranslatedChars?: RegExp | string;
 }
 
 export interface ResolvedESLintI18n2Settings {
   translator: readonly (readonly string[])[];
+  untranslatedChars: RegExp;
 }
 
 export function DefaultESLintI18n2Settings(): Required<RemoveVoidFields<ESLintI18n2Settings>> {
-  return { translator: ['i18next.t'] };
+  return {
+    translator: ['i18next.t'],
+    // eslint-disable-next-line no-control-regex
+    untranslatedChars: /[^\x00-\x7F]/,
+  };
 }
 
 export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Settings {
@@ -34,6 +48,7 @@ export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Sett
 
   return {
     translator: merged.translator.map((item) => item.split('.')),
+    untranslatedChars: RegExp(merged.untranslatedChars),
   };
 }
 
@@ -43,6 +58,7 @@ function assertSettings(settings: unknown): asserts settings is ESLintI18n2Setti
     additionalProperties: false,
     properties: {
       translator: { type: 'array', items: { type: 'string' }, minItems: 1 },
+      untranslatedChars: { type: 'string' },
     },
   });
 

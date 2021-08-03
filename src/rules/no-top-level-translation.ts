@@ -8,10 +8,10 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
     type: 'problem',
     docs: {
       category: 'Possible Errors',
-      description: 'require `i18next.t()` calls to be inside the function scope',
+      description: 'Require `i18next.t()` calls to be inside the function scope.',
       recommended: true,
       suggestion: false,
-      // url: '',
+      // url: '', // TODO: 文档
     },
   },
   create(context) {
