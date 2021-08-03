@@ -3,6 +3,7 @@
     "alwaysStrict": true,
     "declaration": true,
     "esModuleInterop": true,
+    "exactOptionalPropertyTypes": true,
     "experimentalDecorators": false,
     "importHelpers": false,
     "jsx": "preserve",

@@ -1,23 +1,7 @@
 import type { Rule, Scope } from 'eslint';
 import type ESTree from 'estree';
+import { resolveSettings } from '../settings';
 import { memoizeWithWeakMap } from '../utils';
-
-export interface NoTopLevelTranslationConfig {
-  /**
-   * 指定翻译函数调用的访问路径。
-   *
-   * @default
-   * ```ts
-   * ['i18next.t']
-   * ```
-   *
-   * @example
-   * ```ts
-   * ['i18next.t', 't.*', 'i18next.**']
-   * ```
-   */
-  translator?: readonly string[];
-}
 
 export const NoTopLevelTranslation: Rule.RuleModule = {
   meta: {
@@ -29,21 +13,9 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
       suggestion: false,
       // url: '',
     },
-    schema: [
-      {
-        type: 'object',
-        additionalProperties: false,
-        properties: {
-          translator: { type: 'array', items: { type: 'string' }, minItems: 1 },
-        },
-      },
-    ],
   },
   create(context) {
-    const config: NoTopLevelTranslationConfig = context.options[0] || {};
-    const translatorPatternList = (config.translator ?? ['i18next.t']).map((item) =>
-      item.split('.'),
-    );
+    const settings = resolveSettings(context.settings.i18n2);
 
     /**
      * 收集对象的访问路径。
@@ -99,7 +71,7 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
      */
     function isTranslator(callee: ESTree.CallExpression['callee']): boolean {
       const path = collectObjectPath(callee);
-      return translatorPatternList.some((patterns) => matchObjectPath(patterns, path));
+      return settings.translator.some((patterns) => matchObjectPath(patterns, path));
     }
 
     /**
