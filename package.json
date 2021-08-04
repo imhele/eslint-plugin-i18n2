@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.8",
+    "eslint-utils2": "^3.1.0-alpha.1",
     "os-locale": "^5.0.0"
   },
   "peerDependencies": {

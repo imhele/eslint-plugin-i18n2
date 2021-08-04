@@ -1,5 +1,5 @@
 import osLocale from 'os-locale';
-import t from 'types-lib';
+import type t from 'types-lib';
 import en from './en';
 import type { TranslationsType } from './interface';
 import zhCN from './zh-cn';

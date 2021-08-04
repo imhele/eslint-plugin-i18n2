@@ -1,20 +1,22 @@
+import { TraceMap, TraceMapObject } from 'eslint-utils2';
+import type t from 'types-lib';
+
 export namespace ObjectPath {
-  export enum Wildcard {
-    /**
-     * 单层级通配符 `*` 。
-     */
-    SingleLevel,
-    /**
-     * 任意层级通配符 `**` 。
-     */
-    MultiLevel,
-  }
+  /**
+   * 任意层级通配符 `**` 。
+   */
+  export const MultiLevelWildcard = Symbol('MultiLevelWildcard');
 
-  export type FragmentType = Wildcard | string;
+  /**
+   * 单层级通配符 `*` 。
+   */
+  export const SingleLevelWildcard = Symbol('SingleLevelWildcard');
 
-  export const WildcardStringsMap: ReadonlyMap<string, Wildcard> = new Map([
-    ['*', Wildcard.SingleLevel],
-    ['**', Wildcard.MultiLevel],
+  export type FragmentType = symbol | string;
+
+  export const WildcardStringsMap: ReadonlyMap<string, symbol> = new Map([
+    ['*', SingleLevelWildcard],
+    ['**', MultiLevelWildcard],
   ]);
 
   export const SplitString = '.';
@@ -88,6 +90,29 @@ export namespace ObjectPath {
     }
   }
 
+  export function mergeAsTraceMap(
+    list: readonly (readonly FragmentType[])[],
+    info: TraceMapObject,
+  ): TraceMap {
+    return list.reduce<TraceMap>((map, fragments) => {
+      const lastIndex = fragments.length - 1;
+
+      fragments.reduce((current, fragment, index) => {
+        if (!Object.prototype.hasOwnProperty.call(current, fragment)) {
+          current[fragment] = Object.create(null);
+        }
+
+        if (index === lastIndex) {
+          Object.assign(current[fragment], info);
+        }
+
+        return current[fragment];
+      }, map as t.AnyRecord);
+
+      return map;
+    }, Object.create(null));
+  }
+
   /**
    * 根据配置匹配对象的访问路径。
    *
@@ -108,10 +133,10 @@ export namespace ObjectPath {
     // 无法继续匹配
     if (!(patterns.length > 0) || !(path.length > 0)) return false;
     // 任意层级通配符
-    if (patterns[0] === Wildcard.MultiLevel)
+    if (patterns[0] === MultiLevelWildcard)
       return match(patterns.slice(1), path.slice(1)) || match(patterns, path.slice(1));
     // 通配符
-    if (patterns[0] === Wildcard.SingleLevel || patterns[0] === path[0])
+    if (patterns[0] === SingleLevelWildcard || patterns[0] === path[0])
       return match(patterns.slice(1), path.slice(1));
     return false;
   }
