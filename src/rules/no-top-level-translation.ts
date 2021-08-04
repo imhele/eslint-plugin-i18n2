@@ -1,5 +1,6 @@
 import type { Rule, Scope } from 'eslint';
 import type ESTree from 'estree';
+import { Translations } from '../locales';
 import { resolveSettings } from '../settings';
 import { collectObjectPath, matchObjectPath, memoizeWithWeakMap } from '../utils';
 
@@ -8,7 +9,7 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
     type: 'suggestion',
     docs: {
       category: 'Best Practices',
-      description: 'Require `i18next.t()` calls to be inside the function scope.',
+      description: Translations.NoTopLevelTranslationRuleDescription,
       recommended: true,
       suggestion: false,
       // url: '', // TODO: 文档
@@ -28,21 +29,14 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
       // 如果不是翻译调用，则忽略
       if (!isTranslator(node.callee)) return;
 
-      context.report({
-        node,
-        message:
-          'It is dangerous to get the translation at the top level, ' +
-          'because the translation resources may not be loaded at this time, ' +
-          'so that the corresponding translation copy cannot be obtained.\n' +
-          '在顶层获取翻译是危险的，因为此时可能还未载入翻译资源，导致无法获取到对应的翻译文案。',
-      });
+      context.report({ node, message: Translations.NoTopLevelTranslationWarning });
     }
 
     /**
-     * 判断调用的函数是否用于翻译。
+     * 判断 node 是否为翻译函数。
      */
-    function isTranslator(callee: ESTree.CallExpression['callee']): boolean {
-      const path = memoizedCollectObjectPath(callee);
+    function isTranslator(node: ESTree.Node): boolean {
+      const path = memoizedCollectObjectPath(node);
       return settings.translator.some((patterns) => matchObjectPath(patterns, path));
     }
   },
