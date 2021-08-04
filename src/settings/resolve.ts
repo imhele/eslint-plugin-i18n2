@@ -1,3 +1,4 @@
+import { CALL, READ } from 'eslint-utils2';
 import { mustBeValid, validate } from 'json-schema';
 import { ObjectPath, removeVoidFields } from '../utils';
 import {
@@ -11,9 +12,14 @@ export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Sett
   removeVoidFields(settings);
 
   const merged = { ...DefaultESLintI18n2Settings(), ...settings };
+  const translatorTraceMap = ObjectPath.mergeAsTraceMap(merged.translator.map(ObjectPath.compile), {
+    [CALL]: true,
+    [READ]: true,
+  });
 
   return {
-    translator: merged.translator.map(ObjectPath.compile),
+    translator: translatorTraceMap,
+    translatorSourceModule: merged.translatorSourceModule,
     untranslatedChars: RegExp(merged.untranslatedChars),
   };
 }
