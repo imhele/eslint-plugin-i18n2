@@ -2,6 +2,8 @@ import type { Linter } from 'eslint';
 
 export * from './rules';
 
+export type { ESLintI18n2Settings } from './settings';
+
 const recommended: Linter.BaseConfig = {
   plugins: ['i18n2'],
   rules: {

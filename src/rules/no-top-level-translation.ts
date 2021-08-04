@@ -2,7 +2,7 @@ import type { Rule, Scope } from 'eslint';
 import type ESTree from 'estree';
 import { Translations } from '../locales';
 import { resolveSettings } from '../settings';
-import { collectObjectPath, matchObjectPath, memoizeWithWeakMap } from '../utils';
+import { ObjectPath, collectObjectPath, memoizeWithWeakMap } from '../utils';
 
 export const NoTopLevelTranslation: Rule.RuleModule = {
   meta: {
@@ -37,7 +37,7 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
      */
     function isTranslator(node: ESTree.Node): boolean {
       const path = memoizedCollectObjectPath(node);
-      return settings.translator.some((patterns) => matchObjectPath(patterns, path));
+      return settings.translator.some((patterns) => ObjectPath.match(patterns, path));
     }
   },
 };
