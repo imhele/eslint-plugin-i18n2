@@ -1,5 +1,4 @@
 import { TraceMap, TraceMapObject } from 'eslint-utils2';
-import type t from 'types-lib';
 
 export namespace ObjectPath {
   /**
@@ -97,7 +96,7 @@ export namespace ObjectPath {
     return list.reduce<TraceMap>((map, fragments) => {
       const lastIndex = fragments.length - 1;
 
-      fragments.reduce((current, fragment, index) => {
+      (fragments as string[]).reduce<TraceMapObject>((current, fragment, index) => {
         if (!Object.prototype.hasOwnProperty.call(current, fragment)) {
           current[fragment] = Object.create(null);
         }
@@ -107,7 +106,7 @@ export namespace ObjectPath {
         }
 
         return current[fragment];
-      }, map as t.AnyRecord);
+      }, map);
 
       return map;
     }, Object.create(null));
