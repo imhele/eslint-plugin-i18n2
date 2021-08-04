@@ -102,7 +102,7 @@ export namespace ObjectPath {
         }
 
         if (index === lastIndex) {
-          Object.assign(current[fragment], info);
+          Object.defineProperties(current[fragment], Object.getOwnPropertyDescriptors(info));
         }
 
         return current[fragment];

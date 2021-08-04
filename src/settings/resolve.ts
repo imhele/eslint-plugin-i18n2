@@ -1,6 +1,6 @@
-import { CALL, READ } from 'eslint-utils2';
+import { CALL, ESM, READ } from 'eslint-utils2';
 import { mustBeValid, validate } from 'json-schema';
-import { ObjectPath, removeVoidFields } from '../utils';
+import { ObjectPath, ownKeys, removeVoidFields } from '../utils';
 import {
   DefaultESLintI18n2Settings,
   ESLintI18n2Settings,
@@ -17,6 +17,14 @@ export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Sett
     [READ]: true,
   });
 
+  if (merged.translatorSourceModule === 'esm') {
+    ownKeys(translatorTraceMap).forEach((key) => {
+      if (!Object.prototype.hasOwnProperty.call(translatorTraceMap[key], ESM)) {
+        translatorTraceMap[key][ESM] = true;
+      }
+    });
+  }
+
   return {
     translator: translatorTraceMap,
     translatorSourceModule: merged.translatorSourceModule,
@@ -30,6 +38,7 @@ function assertSettings(settings: unknown): asserts settings is ESLintI18n2Setti
     additionalProperties: false,
     properties: {
       translator: { type: 'array', items: { type: 'string' }, minItems: 1 },
+      translatorSourceModule: { enum: ['cjs', 'esm', 'global'] },
       untranslatedChars: { type: 'string' },
     },
   });
