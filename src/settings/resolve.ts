@@ -1,5 +1,6 @@
 import { CALL, ESM, READ } from 'eslint-utils2';
 import { mustBeValid, validate } from 'json-schema';
+import t from 'types-lib';
 import { ObjectPath, ownKeys, removeVoidFields } from '../utils';
 import {
   DefaultESLintI18n2Settings,
@@ -20,7 +21,7 @@ export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Sett
   if (merged.translatorSourceModule === 'esm') {
     ownKeys(translatorTraceMap).forEach((key) => {
       if (!Object.prototype.hasOwnProperty.call(translatorTraceMap[key], ESM)) {
-        translatorTraceMap[key][ESM] = true;
+        (translatorTraceMap[key] as t.UnknownRecord)[ESM as never] = true;
       }
     });
   }

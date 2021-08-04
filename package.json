@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-i18n2",
-  "version": "0.0.1-alpha.4",
+  "version": "0.0.1-alpha.5",
   "license": "MIT",
   "main": "./lib/index.js",
   "module": "./es/index.mjs",
