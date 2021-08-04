@@ -24,7 +24,7 @@ export interface ESLintI18n2Settings {
    * @default
    * /[^\x00-\x7F]/
    */
-  untranslatedChars?: RegExp | string;
+  untranslatedChars?: RegExp | string | undefined;
 }
 
 export interface ResolvedESLintI18n2Settings {

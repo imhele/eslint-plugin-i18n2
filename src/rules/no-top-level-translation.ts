@@ -1,13 +1,13 @@
 import type { Rule, Scope } from 'eslint';
 import type ESTree from 'estree';
 import { resolveSettings } from '../settings';
-import { memoizeWithWeakMap } from '../utils';
+import { collectObjectPath, matchObjectPath, memoizeWithWeakMap } from '../utils';
 
 export const NoTopLevelTranslation: Rule.RuleModule = {
   meta: {
-    type: 'problem',
+    type: 'suggestion',
     docs: {
-      category: 'Possible Errors',
+      category: 'Best Practices',
       description: 'Require `i18next.t()` calls to be inside the function scope.',
       recommended: true,
       suggestion: false,
@@ -16,35 +16,7 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
   },
   create(context) {
     const settings = resolveSettings(context.settings.i18n2);
-
-    /**
-     * 收集对象的访问路径。
-     */
-    const collectObjectPath = memoizeWithWeakMap(function collectObjectPath(
-      node: ESTree.Node,
-    ): readonly (string | null)[] {
-      if (node.type === 'Identifier') return [node.name];
-
-      if (node.type === 'MemberExpression') {
-        // 左侧表达式
-        const left = collectObjectPath(node.object);
-
-        // object.prop object?.prop
-        if (node.property.type === 'Identifier') return left.concat(node.property.name);
-
-        // object['123'] object[123]
-        if (node.computed && node.property.type === 'Literal')
-          return left.concat(
-            typeof node.property.value === 'string'
-              ? node.property.value
-              : String(node.property.value),
-          );
-
-        return left.concat(null);
-      }
-
-      return [];
-    });
+    const memoizedCollectObjectPath = memoizeWithWeakMap(collectObjectPath);
 
     return {
       CallExpression,
@@ -70,39 +42,20 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
      * 判断调用的函数是否用于翻译。
      */
     function isTranslator(callee: ESTree.CallExpression['callee']): boolean {
-      const path = collectObjectPath(callee);
+      const path = memoizedCollectObjectPath(callee);
       return settings.translator.some((patterns) => matchObjectPath(patterns, path));
-    }
-
-    /**
-     * 判断 node 所在的 scope 是否在 function 内部。
-     */
-    function isInsideFunctionScope(scope: Scope.Scope): boolean {
-      let currentScope: Scope.Scope | null = scope;
-
-      do if (currentScope.type === 'function') return true;
-      while ((currentScope = currentScope.upper));
-
-      return false;
     }
   },
 };
 
 /**
- * 根据配置匹配对象的访问路径。
+ * 判断 node 所在的 scope 是否在 function 内部。
  */
-function matchObjectPath(patterns: readonly string[], path: readonly (string | null)[]): boolean {
-  // 匹配完成
-  if (patterns.length === 0 && path.length === 0) return true;
-  // 无法继续匹配
-  if (!(patterns.length > 0) || !(path.length > 0)) return false;
-  // 任意层级通配符
-  if (patterns[0] === '**')
-    return (
-      matchObjectPath(patterns.slice(1), path.slice(1)) || matchObjectPath(patterns, path.slice(1))
-    );
-  // 通配符
-  if (patterns[0] === '*' || patterns[0] === path[0])
-    return matchObjectPath(patterns.slice(1), path.slice(1));
+function isInsideFunctionScope(scope: Scope.Scope): boolean {
+  let currentScope: Scope.Scope | null = scope;
+
+  do if (currentScope.type === 'function') return true;
+  while ((currentScope = currentScope.upper));
+
   return false;
 }
