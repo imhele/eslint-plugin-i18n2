@@ -22,4 +22,4 @@ const hasOwnProperty = Object.prototype.hasOwnProperty as t.Object.prototype.has
 export const Translations =
   Locales.reduce<TranslationsType | null>((found, locale) => {
     return !found && hasOwnProperty.call(TranslationsMap, locale) ? TranslationsMap[locale] : found;
-  }, null) ?? TranslationsMap.en;
+  }, null) || TranslationsMap.en;

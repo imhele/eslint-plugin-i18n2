@@ -72,7 +72,7 @@ export namespace ObjectPath {
 
     function appendFragment(): void {
       fragment ||= '';
-      fragments.push(WildcardStringsMap.get(fragment) ?? fragment);
+      fragments.push(WildcardStringsMap.get(fragment) || fragment);
       fragment = null;
     }
 

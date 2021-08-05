@@ -1,4 +1,4 @@
-import { CALL, ESM, READ } from 'eslint-utils2';
+import { CALL, ESM } from 'eslint-utils2';
 import { mustBeValid, validate } from 'json-schema';
 import t from 'types-lib';
 import { ObjectPath, ownKeys, removeVoidFields } from '../utils';
@@ -15,7 +15,6 @@ export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Sett
   const merged = { ...DefaultESLintI18n2Settings(), ...settings };
   const translatorTraceMap = ObjectPath.mergeAsTraceMap(merged.translator.map(ObjectPath.compile), {
     [CALL]: true,
-    [READ]: true,
   });
 
   if (merged.translatorSourceModule === 'esm') {

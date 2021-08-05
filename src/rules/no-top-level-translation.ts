@@ -1,5 +1,6 @@
 import type { Rule, Scope } from 'eslint';
-import { ReferenceTracker, TrackedReferences } from 'eslint-utils2';
+import { ReferenceTracker } from 'eslint-utils2';
+import type ESTree from 'estree';
 import { Translations } from '../locales';
 import { resolveSettings } from '../settings';
 import { ObjectPath } from '../utils';
@@ -14,48 +15,35 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
       suggestion: false,
       // url: '', // TODO: 文档
     },
-    schema: [
-      {
-        type: 'object',
-        additionalProperties: false,
-        properties: {
-          includeRead: { type: 'boolean' },
-        },
-      },
-    ],
   },
   create(context) {
     const settings = resolveSettings(context.settings.i18n2);
-    const includeRead: boolean = context.options[0]?.includeRead ?? false;
 
     return {
       'Program:exit'(): void {
         const { scopeManager } = context.getSourceCode();
+        const globalScope = scopeManager.globalScope || context.getScope();
 
-        const tracker = new ReferenceTracker(context.getScope(), {
+        const tracker = new ReferenceTracker(globalScope, {
           multiLevelWildcard: ObjectPath.MultiLevelWildcard,
           singleLevelWildcard: ObjectPath.SingleLevelWildcard,
         });
 
-        let references: IterableIterator<TrackedReferences>;
-
-        if (settings.translatorSourceModule === 'cjs') {
-          references = tracker.iterateCjsReferences(settings.translator);
-        } else if (settings.translatorSourceModule === 'esm') {
-          references = tracker.iterateEsmReferences(settings.translator);
-        } else {
-          references = tracker.iterateGlobalReferences(settings.translator);
-        }
-
-        for (const { node, type } of references) {
-          // 跳过非顶层 scope 的所有函数调用的检查
-          if (isInsideFunctionScope(scopeManager.acquire(node))) continue;
-
-          if (type === ReferenceTracker.CALL || (includeRead && type === ReferenceTracker.READ)) {
-            context.report({ node, message: Translations.NoTopLevelTranslationWarning });
-            // 由于引用分析比较复杂，所以一次只汇报一个错误
-            break;
+        const references = (() => {
+          if (settings.translatorSourceModule === 'cjs') {
+            return tracker.iterateCjsReferences(settings.translator);
+          } else if (settings.translatorSourceModule === 'esm') {
+            return tracker.iterateEsmReferences(settings.translator);
+          } else {
+            return tracker.iterateGlobalReferences(settings.translator);
           }
+        })();
+
+        for (const { node } of references) {
+          // 跳过非顶层 scope 的所有函数调用的检查
+          if (isInnermostScopeInsideFunctionScope(globalScope, node)) continue;
+
+          context.report({ node, message: Translations.NoTopLevelTranslationWarning });
         }
       },
     };
@@ -63,15 +51,26 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
 };
 
 /**
- * 判断 node 所在的 scope 是否在 function 内部。
+ * 从 globalScope 向内搜索 node 所在的 scope ，判断其是否在 function 内部。
  */
-function isInsideFunctionScope(scope: Scope.Scope | null): boolean {
-  if (!scope) return false;
+function isInnermostScopeInsideFunctionScope(scope: Scope.Scope, node: ESTree.Node): boolean {
+  const location = node.range[0];
 
-  let currentScope: Scope.Scope | null = scope;
+  outside: do {
+    if (scope.type === 'function') return true;
 
-  do if (currentScope.type === 'function') return true;
-  while ((currentScope = currentScope.upper));
+    for (const childScope of scope.childScopes) {
+      const { range } = childScope.block;
+
+      if (range[0] <= location && location < range[1]) {
+        scope = childScope;
+        continue outside;
+      }
+    }
+
+    break outside;
+    // eslint-disable-next-line no-constant-condition
+  } while (true);
 
   return false;
 }
