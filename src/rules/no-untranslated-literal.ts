@@ -1,5 +1,6 @@
 import type { Rule } from 'eslint';
 import type ESTree from 'estree';
+import { Translations } from '../locales';
 import { resolveSettings } from '../settings';
 
 export const NoUntranslatedLiteral: Rule.RuleModule = {
@@ -7,10 +8,10 @@ export const NoUntranslatedLiteral: Rule.RuleModule = {
     type: 'suggestion',
     docs: {
       category: 'Best Practices',
-      description: 'This rule helps to find out where untranslated literals are.',
+      description: Translations.NoUntranslatedLiteralRuleDescription,
       recommended: true,
       suggestion: false,
-      // url: '', // TODO: 文档
+      url: 'https://github.com/imhele/eslint-plugin-i18n2',
     },
   },
   create(context) {
@@ -18,24 +19,23 @@ export const NoUntranslatedLiteral: Rule.RuleModule = {
 
     return {
       Literal,
-      TemplateElement,
+      TemplateLiteral,
     };
 
     function Literal(node: ESTree.Literal): void {
-      if (typeof node.value === 'string') checkLiteral(node.value, node);
+      if (checkLiteral(node.value)) report(node);
     }
 
-    function TemplateElement(node: ESTree.TemplateElement): void {
-      checkLiteral(node.value.cooked ?? node.value.raw, node);
+    function TemplateLiteral(node: ESTree.TemplateLiteral): void {
+      if (node.quasis.some(checkLiteral)) report(node);
     }
 
-    function checkLiteral(value: string, node: ESTree.Node): void {
-      if (settings.untranslatedChars.test(value)) {
-        context.report({
-          node,
-          message: '',
-        });
-      }
+    function checkLiteral(value: unknown): boolean {
+      return typeof value === 'string' && settings.untranslatedChars.test(value);
+    }
+
+    function report(node: ESTree.Node): void {
+      context.report({ node, message: Translations.NoUntranslatedLiteralWarning });
     }
   },
 };

@@ -8,6 +8,14 @@ export interface TranslationsType {
    */
   readonly NoTopLevelTranslationWarning: string;
   /**
+   * 此规则用于查找未翻译的文本。
+   */
+  readonly NoUntranslatedLiteralRuleDescription: string;
+  /**
+   * 此文本可能没有被翻译。
+   */
+  readonly NoUntranslatedLiteralWarning: string;
+  /**
    * 插件的配置，所有规则都会共享此配置。
    */
   readonly SettingsDescription: string;

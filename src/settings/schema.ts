@@ -1,5 +1,5 @@
 import { JSONSchema4 } from 'json-schema';
-import Translations from '../locales/zh-cn';
+import { Translations } from '../locales';
 
 export const SettingsSchema: JSONSchema4 = {
   type: 'object',

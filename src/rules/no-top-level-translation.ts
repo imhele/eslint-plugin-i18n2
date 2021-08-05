@@ -13,7 +13,7 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
       description: Translations.NoTopLevelTranslationRuleDescription,
       recommended: true,
       suggestion: false,
-      // url: '', // TODO: 文档
+      url: 'https://github.com/imhele/eslint-plugin-i18n2',
     },
   },
   create(context) {
