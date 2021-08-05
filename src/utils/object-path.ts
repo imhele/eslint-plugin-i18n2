@@ -1,4 +1,6 @@
-import { TraceMap, TraceMapObject } from 'eslint-utils2';
+import type { Scope } from 'eslint';
+import { TraceMap, TraceMapObject, getStringIfConstant } from 'eslint-utils2';
+import type ESTree from 'estree';
 
 export namespace ObjectPath {
   /**
@@ -21,6 +23,51 @@ export namespace ObjectPath {
   export const SplitString = '.';
 
   export const EscapeString = '\\';
+
+  /**
+   * 收集对象的访问路径。
+   */
+  export function collect(root: ESTree.Node, scope?: Scope.Scope): readonly (string | null)[] {
+    const queue = [root];
+    const path: (string | null)[] = [];
+
+    let node: ESTree.Node | undefined;
+
+    while ((node = queue.pop())) {
+      if (node.type === 'Identifier') {
+        path.push(node.name);
+        continue;
+      }
+
+      if (node.type === 'ThisExpression') {
+        path.push('this');
+        continue;
+      }
+
+      if (node.type === 'ChainExpression') {
+        node = node.expression;
+      }
+
+      if (node.type === 'MemberExpression') {
+        // 右侧表达式
+        if (node.property.type === 'Identifier') {
+          // object.prop object?.prop
+          path.push(node.property.name);
+        } else if (node.computed) {
+          // object['123'] object[123] object[`template`]
+          path.push(getStringIfConstant(node.property, scope));
+        } else {
+          // 未知的访问形式
+          path.push(null);
+        }
+
+        // 左侧表达式
+        queue.push(node.object);
+      }
+    }
+
+    return path.reverse();
+  }
 
   /**
    * 解析对象访问路径用于匹配。

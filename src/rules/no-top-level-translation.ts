@@ -21,8 +21,7 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
 
     return {
       'Program:exit'(): void {
-        const { scopeManager } = context.getSourceCode();
-        const globalScope = scopeManager.globalScope || context.getScope();
+        const globalScope = context.getSourceCode().scopeManager.globalScope || context.getScope();
 
         const tracker = new ReferenceTracker(globalScope, {
           multiLevelWildcard: ObjectPath.MultiLevelWildcard,

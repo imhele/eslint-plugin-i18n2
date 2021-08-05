@@ -7,6 +7,9 @@ const Locales: TranslationsType = {
     'It is dangerous to get the translation at the top level, ' +
     'because the translation resources may not be loaded at this time, ' +
     'so that the corresponding translation copy cannot be obtained.',
+  NoUntranslatedLiteralOptionsCheckArgumentsOfConsoleCallDescription:
+    'Enable checking of the arguments of `console.xxx()` calls.',
+  NoUntranslatedLiteralOptionsDescription: 'Options of the `no-untranslated-literal` rule.',
   NoUntranslatedLiteralRuleDescription:
     'This rule helps to find out where untranslated literals are.',
   NoUntranslatedLiteralWarning: 'This text may not have been translated.',

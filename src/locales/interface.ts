@@ -8,6 +8,14 @@ export interface TranslationsType {
    */
   readonly NoTopLevelTranslationWarning: string;
   /**
+   * 启用对于 `console.xxx()` 调用参数的检查。
+   */
+  readonly NoUntranslatedLiteralOptionsCheckArgumentsOfConsoleCallDescription: string;
+  /**
+   * `no-untranslated-literal` 规则的配置项。
+   */
+  readonly NoUntranslatedLiteralOptionsDescription: string;
+  /**
    * 此规则用于查找未翻译的文本。
    */
   readonly NoUntranslatedLiteralRuleDescription: string;
