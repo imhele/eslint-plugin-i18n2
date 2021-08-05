@@ -5,9 +5,7 @@ export type ESLintI18n2TranslatorSourceModule = 'cjs' | 'esm' | 'global';
 
 export interface ESLintI18n2Settings {
   /**
-   * 指定翻译函数调用的访问路径。
-   *
-   * 支持一级通配符 `*` 和多级通配符 `**` ，可以使用 `\` 转义。
+   * 指定翻译函数调用的访问路径，支持单级通配符 `*` 和多级通配符 `**` ，可以使用 `\` 转义。
    *
    * @default
    * ```ts
@@ -21,7 +19,7 @@ export interface ESLintI18n2Settings {
    */
   translator?: readonly string[] | undefined;
   /**
-   * 指定翻译函数的来源。
+   * 指定翻译函数的导入来源，目前支持 CommonJS (cjs) / ECMAScript Module (esm) / Global (global) 。
    *
    * @default
    * ```ts
@@ -38,9 +36,7 @@ export interface ESLintI18n2Settings {
    */
   translatorSourceModule?: ESLintI18n2TranslatorSourceModule;
   /**
-   * 符合此正则表达式的字符都将被视为未翻译。
-   *
-   * 传入字符串会被直接转为正则表达式。
+   * 符合此正则表达式的字符都将被视为未翻译，传入字符串会被直接转为正则表达式。
    *
    * @default
    * ```ts

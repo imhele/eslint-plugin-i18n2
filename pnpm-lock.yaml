@@ -16,6 +16,7 @@ specifiers:
   '@babel/runtime': ^7.14.8
   '@types/eslint': ^7.28.0
   '@types/estree': ^0.0.50
+  '@types/json-schema': ^7.0.9
   '@types/node': ^14.17.6
   '@typescript-eslint/eslint-plugin': ^4.19.0
   '@typescript-eslint/parser': ^4.19.0
@@ -27,6 +28,7 @@ specifiers:
   eslint-plugin-import: ^2.22.1
   eslint-plugin-prettier: ^3.3.1
   eslint-utils2: ^3.1.0-alpha.1
+  json-schema: ^0.3.0
   lerna: ^4.0.0
   lint-staged: ^8.1.0
   os-locale: ^5.0.0
@@ -39,6 +41,7 @@ specifiers:
 dependencies:
   '@babel/runtime': 7.14.8
   eslint-utils2: 3.1.0-alpha.1_eslint@7.32.0
+  json-schema: 0.3.0
   os-locale: 5.0.0
 
 devDependencies:
@@ -56,6 +59,7 @@ devDependencies:
   '@babel/preset-env': 7.14.9_@babel+core@7.14.8
   '@types/eslint': 7.28.0
   '@types/estree': 0.0.50
+  '@types/json-schema': 7.0.9
   '@types/node': 14.17.7
   '@typescript-eslint/eslint-plugin': 4.28.5_e35c02790833dc22c908334487426c20
   '@typescript-eslint/parser': 4.28.5_314c2e1441bce247b5e39a8668623cae
@@ -2595,6 +2599,10 @@ packages:
 
   /@types/json-schema/7.0.8:
     resolution: {integrity: sha512-YSBPTLTVm2e2OoQIDYx8HaeWJ5tTToLH67kXR7zYNGupXMEHa2++G8k+DczX2cFVgalypqtyZIcU19AFcmOpmg==}
+    dev: true
+
+  /@types/json-schema/7.0.9:
+    resolution: {integrity: sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==}
     dev: true
 
   /@types/minimatch/3.0.5:
@@ -6387,6 +6395,10 @@ packages:
   /json-schema/0.2.3:
     resolution: {integrity: sha1-tIDIkuWaLwWVTOcnvT8qTogvnhM=}
     dev: true
+
+  /json-schema/0.3.0:
+    resolution: {integrity: sha512-TYfxx36xfl52Rf1LU9HyWSLGPdYLL+SQ8/E/0yVyKG8wCCDaSrhPap0vEdlsZWRaS6tnKKLPGiEJGiREVC8kxQ==}
+    dev: false
 
   /json-stable-stringify-without-jsonify/1.0.1:
     resolution: {integrity: sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=}

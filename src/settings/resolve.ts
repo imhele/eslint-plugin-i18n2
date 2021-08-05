@@ -7,6 +7,7 @@ import {
   ESLintI18n2Settings,
   ResolvedESLintI18n2Settings,
 } from './interface';
+import { SettingsSchema } from './schema';
 
 export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Settings {
   assertSettings(settings);
@@ -33,15 +34,5 @@ export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Sett
 }
 
 function assertSettings(settings: unknown): asserts settings is ESLintI18n2Settings {
-  const result = validate(settings as never, {
-    type: 'object',
-    additionalProperties: false,
-    properties: {
-      translator: { type: 'array', items: { type: 'string' }, minItems: 1 },
-      translatorSourceModule: { enum: ['cjs', 'esm', 'global'] },
-      untranslatedChars: { type: 'string' },
-    },
-  });
-
-  mustBeValid(result);
+  mustBeValid(validate(settings as never, SettingsSchema));
 }

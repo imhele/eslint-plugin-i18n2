@@ -26,6 +26,7 @@
     "@babel/preset-env": "~7.14.8",
     "@types/eslint": "^7.28.0",
     "@types/estree": "^0.0.50",
+    "@types/json-schema": "^7.0.9",
     "@types/node": "^14.17.6",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
@@ -47,6 +48,7 @@
   "dependencies": {
     "@babel/runtime": "^7.14.8",
     "eslint-utils2": "^3.1.0-alpha.1",
+    "json-schema": "^0.3.0",
     "os-locale": "^5.0.0"
   },
   "peerDependencies": {
