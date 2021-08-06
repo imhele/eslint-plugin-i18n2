@@ -28,6 +28,7 @@ specifiers:
   eslint-plugin-import: ^2.22.1
   eslint-plugin-prettier: ^3.3.1
   eslint-utils2: ^3.1.0-alpha.1
+  iter-tools: ^7.1.3
   json-schema: ^0.3.0
   lerna: ^4.0.0
   lint-staged: ^8.1.0
@@ -41,6 +42,7 @@ specifiers:
 dependencies:
   '@babel/runtime': 7.14.8
   eslint-utils2: 3.1.0-alpha.1_eslint@7.32.0
+  iter-tools: 7.1.3
   json-schema: 0.3.0
   os-locale: 5.0.0
 
@@ -6335,6 +6337,12 @@ packages:
   /isstream/0.1.2:
     resolution: {integrity: sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=}
     dev: true
+
+  /iter-tools/7.1.3:
+    resolution: {integrity: sha512-Pnd3FVHgKnDHrTVjggXLMq5O/P60fho5iL0a0kkdLcofxX8STHw6cgYZ4ZHQS3Zb4Hg/VeqeNUxDs4vlVwUL4A==}
+    dependencies:
+      '@babel/runtime': 7.14.8
+    dev: false
 
   /jest-worker/26.6.2:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}

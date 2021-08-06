@@ -1,6 +1,10 @@
 import type { Rule } from 'eslint';
-import { ReferenceTracker } from 'eslint-utils2';
+import { ReferenceTracker, getStaticValue } from 'eslint-utils2';
 import type ESTree from 'estree';
+import filter from 'iter-tools/methods/filter';
+import map from 'iter-tools/methods/map';
+import pipe from 'iter-tools/methods/pipe';
+import concat from 'iter-tools/methods/concat';
 import { Translations } from '../locales';
 import { resolveSettings } from '../settings';
 
@@ -51,7 +55,8 @@ export const NoUntranslatedLiteral: Rule.RuleModule = {
 
     return {
       Literal(node: ESTree.Literal): void {
-        if (isUntranslatedString(node.value)) report(node);
+        if (isString(node.value) && isUntranslatedText(node.value) && !isWellknownText(node.value))
+          report(node);
       },
       Program(): void {
         const globalScope = context.getSourceCode().scopeManager.globalScope || context.getScope();
@@ -68,20 +73,31 @@ export const NoUntranslatedLiteral: Rule.RuleModule = {
         }
       },
       TemplateLiteral(node: ESTree.TemplateLiteral): void {
-        if (node.quasis.some(({ value }) => isUntranslatedString(value.cooked || value.raw)))
-          report(node);
+        const scope = context.getScope();
+
+        const quasis = pipe(
+          map((e: ESTree.TemplateElement) => e.value.cooked ?? e.value.raw),
+          filter(isString),
+        )(node.quasis);
+
+        const expressions = pipe(
+          map((e: ESTree.Expression) => getStaticValue(e, scope)?.value),
+          filter(isString),
+        )(node.expressions);
+
+        let isThereAnyUntranslatedText = false;
+
+        for (const text of concat(quasis, expressions)) {
+          // 发现无需翻译的文本，直接结束检查
+          if (isWellknownText(text)) return;
+          // 如果未曾找到未翻译的文本，但是现在发现 text 是未翻译的文本，则记录下来，
+          // 继续看后面的文本是否存在无需翻译的内容
+          isThereAnyUntranslatedText ||= isUntranslatedText(text);
+        }
+
+        if (isThereAnyUntranslatedText) report(node);
       },
     };
-
-    function isUntranslatedString(value: ESTree.Literal['value']): boolean {
-      // 对于 number bigint 等值，直接忽略
-      if (typeof value !== 'string') return false;
-      // 不包含未翻译的字符
-      if (!untranslatedChars.test(value)) return false;
-      // 无需翻译的文本
-      if (wellknownText && wellknownText.test(value)) return false;
-      return true;
-    }
 
     function report(node: ESTree.Node): void {
       // 如果 node 是 console.xxx() 的参数，并且没有启用 checkArgumentsOfConsoleCall ，则不上报错误
@@ -109,6 +125,27 @@ export const NoUntranslatedLiteral: Rule.RuleModule = {
       }
 
       return false;
+    }
+
+    /**
+     * Literal 的值是否为字符串。
+     */
+    function isString(value: unknown): value is string {
+      return typeof value === 'string';
+    }
+
+    /**
+     * 判断 value 是否为未翻译的文本。
+     */
+    function isUntranslatedText(value: string): boolean {
+      return untranslatedChars.test(value);
+    }
+
+    /**
+     * 判断 value 是否为无需翻译的文本。
+     */
+    function isWellknownText(value: string): boolean {
+      return wellknownText ? wellknownText.test(value) : false;
     }
   },
 };
