@@ -40,7 +40,7 @@ export interface ESLintI18n2Settings {
    *
    * @default
    * ```ts
-   * /[^\x00-\x7F]/
+   * /[^\x00-\x7F\s]/
    * ```
    */
   untranslatedChars?: RegExp | string | undefined;
@@ -66,8 +66,9 @@ export function DefaultESLintI18n2Settings(): Required<RemoveVoidFields<ESLintI1
   return {
     translator: ['i18next.t'],
     translatorSourceModule: 'global',
+    // \s 是为了兼容 nbsp 之类的字符
     // eslint-disable-next-line no-control-regex
-    untranslatedChars: /[^\x00-\x7F]/,
+    untranslatedChars: /[^\x00-\x7F\s]/,
     wellknownText: /(DEBUG|DEV|ERROR|LOG|WARN)/,
   };
 }
