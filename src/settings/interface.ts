@@ -49,7 +49,7 @@ export interface ESLintI18n2Settings {
    *
    * @default
    * ```ts
-   * /(DEBUG|DEV|ERROR|WARN)/
+   * /(DEBUG|DEV|ERROR|LOG|WARN)/
    * ```
    */
   wellknownText?: RegExp | string | null | undefined;
@@ -68,6 +68,6 @@ export function DefaultESLintI18n2Settings(): Required<RemoveVoidFields<ESLintI1
     translatorSourceModule: 'global',
     // eslint-disable-next-line no-control-regex
     untranslatedChars: /[^\x00-\x7F]/,
-    wellknownText: /(DEBUG|DEV|ERROR|WARN)/,
+    wellknownText: /(DEBUG|DEV|ERROR|LOG|WARN)/,
   };
 }
