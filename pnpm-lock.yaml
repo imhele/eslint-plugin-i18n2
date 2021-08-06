@@ -28,6 +28,7 @@ specifiers:
   eslint-plugin-import: ^2.22.1
   eslint-plugin-prettier: ^3.3.1
   eslint-utils2: ^3.1.0-alpha.1
+  html-entities: ^2.3.2
   iter-tools: ^7.1.3
   json-schema: ^0.3.0
   lerna: ^4.0.0
@@ -42,6 +43,7 @@ specifiers:
 dependencies:
   '@babel/runtime': 7.14.8
   eslint-utils2: 3.1.0-alpha.1_eslint@7.32.0
+  html-entities: 2.3.2
   iter-tools: 7.1.3
   json-schema: 0.3.0
   os-locale: 5.0.0
@@ -5726,6 +5728,10 @@ packages:
     dependencies:
       lru-cache: 6.0.0
     dev: true
+
+  /html-entities/2.3.2:
+    resolution: {integrity: sha512-c3Ab/url5ksaT0WyleslpBEthOzWhrjQbg75y7XUsfSzi3Dgzt0l8w5e7DylRn15MTlMMD58dTfzddNS2kcAjQ==}
+    dev: false
 
   /http-cache-semantics/4.1.0:
     resolution: {integrity: sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==}
