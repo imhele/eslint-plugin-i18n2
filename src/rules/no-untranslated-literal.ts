@@ -1,6 +1,7 @@
 import type { Rule } from 'eslint';
 import { ReferenceTracker, TraceMap, getStaticValue } from 'eslint-utils2';
 import type ESTree from 'estree';
+import { decode as decodeJSXText } from 'html-entities';
 import { concat, filter, map, pipe } from 'iter-tools';
 import type t from 'types-lib';
 import { Translations } from '../locales';
@@ -76,13 +77,22 @@ export const NoUntranslatedLiteral: Rule.RuleModule = {
           report(node);
       },
       JSXText(node: ESTree.Node & { value: unknown }): void {
+        // 必须是 StringLiteral
+        if (!isString(node.value)) return;
+
+        const cooked = (() => {
+          try {
+            return decodeJSXText(node.value);
+          } catch {
+            return node.value;
+          }
+        })();
+
         if (
-          // 必须是 StringLiteral
-          isString(node.value) &&
           // 必须包含未翻译的字符
-          isUntranslatedText(node.value) &&
+          isUntranslatedText(cooked) &&
           // 不能是无需翻译的文本
-          !isWellknownText(node.value)
+          !isWellknownText(cooked)
         )
           report(node);
       },
