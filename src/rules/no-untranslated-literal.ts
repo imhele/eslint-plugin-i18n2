@@ -1,10 +1,7 @@
 import type { Rule } from 'eslint';
 import { ReferenceTracker, getStaticValue } from 'eslint-utils2';
 import type ESTree from 'estree';
-import filter from 'iter-tools/methods/filter';
-import map from 'iter-tools/methods/map';
-import pipe from 'iter-tools/methods/pipe';
-import concat from 'iter-tools/methods/concat';
+import { concat, filter, map, pipe } from 'iter-tools';
 import { Translations } from '../locales';
 import { resolveSettings } from '../settings';
 
