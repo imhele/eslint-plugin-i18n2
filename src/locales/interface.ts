@@ -39,4 +39,8 @@ export interface TranslationsType {
    * 符合此正则表达式的字符都将被视为未翻译，传入字符串会被直接转为正则表达式。
    */
   readonly SettingsUntranslatedChars: string;
+  /**
+   * 符合此正则表达式的文本将被认为无需翻译，传入字符串会被直接转为正则表达式。
+   */
+  readonly SettingsWellknownText: string;
 }

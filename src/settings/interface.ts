@@ -44,12 +44,22 @@ export interface ESLintI18n2Settings {
    * ```
    */
   untranslatedChars?: RegExp | string | undefined;
+  /**
+   * 符合此正则表达式的文本将被认为无需翻译，传入字符串会被直接转为正则表达式。
+   *
+   * @default
+   * ```ts
+   * /(DEBUG|DEV|ERROR|WARN)/
+   * ```
+   */
+  wellknownText?: RegExp | string | null | undefined;
 }
 
 export interface ResolvedESLintI18n2Settings {
-  translator: TraceMap;
   translatorSourceModule: ESLintI18n2TranslatorSourceModule;
+  translatorTraceMap: TraceMap;
   untranslatedChars: RegExp;
+  wellknownText: RegExp | null;
 }
 
 export function DefaultESLintI18n2Settings(): Required<RemoveVoidFields<ESLintI18n2Settings>> {
@@ -58,5 +68,6 @@ export function DefaultESLintI18n2Settings(): Required<RemoveVoidFields<ESLintI1
     translatorSourceModule: 'global',
     // eslint-disable-next-line no-control-regex
     untranslatedChars: /[^\x00-\x7F]/,
+    wellknownText: /(DEBUG|DEV|ERROR|WARN)/,
   };
 }

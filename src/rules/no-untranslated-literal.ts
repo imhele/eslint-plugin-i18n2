@@ -44,12 +44,14 @@ export const NoUntranslatedLiteral: Rule.RuleModule = {
   create(context) {
     const settings = resolveSettings(context.settings.i18n2);
     const options: NoUntranslatedLiteralOptions = context.options[0] || {};
+
     const { checkArgumentsOfConsoleCall } = options;
+    const { untranslatedChars, wellknownText } = settings;
     const consoleCallExpressionSet = new WeakSet<ESTree.CallExpression>();
 
     return {
       Literal(node: ESTree.Literal): void {
-        if (checkLiteral(node.value)) report(node);
+        if (isUntranslatedString(node.value)) report(node);
       },
       Program(): void {
         const globalScope = context.getSourceCode().scopeManager.globalScope || context.getScope();
@@ -66,13 +68,19 @@ export const NoUntranslatedLiteral: Rule.RuleModule = {
         }
       },
       TemplateLiteral(node: ESTree.TemplateLiteral): void {
-        if (node.quasis.some((element) => checkLiteral(element.value.cooked || element.value.raw)))
+        if (node.quasis.some(({ value }) => isUntranslatedString(value.cooked || value.raw)))
           report(node);
       },
     };
 
-    function checkLiteral(value: ESTree.Literal['value']): boolean {
-      return typeof value === 'string' && settings.untranslatedChars.test(value);
+    function isUntranslatedString(value: ESTree.Literal['value']): boolean {
+      // 对于 number bigint 等值，直接忽略
+      if (typeof value !== 'string') return false;
+      // 不包含未翻译的字符
+      if (!untranslatedChars.test(value)) return false;
+      // 无需翻译的文本
+      if (wellknownText && wellknownText.test(value)) return false;
+      return true;
     }
 
     function report(node: ESTree.Node): void {

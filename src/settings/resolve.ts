@@ -14,11 +14,13 @@ export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Sett
   removeVoidFields(settings);
 
   const merged = { ...DefaultESLintI18n2Settings(), ...settings };
-  const translatorTraceMap = ObjectPath.mergeAsTraceMap(merged.translator.map(ObjectPath.compile), {
+  const { translator, translatorSourceModule, untranslatedChars, wellknownText } = merged;
+
+  const translatorTraceMap = ObjectPath.mergeAsTraceMap(translator.map(ObjectPath.compile), {
     [CALL]: true,
   });
 
-  if (merged.translatorSourceModule === 'esm') {
+  if (translatorSourceModule === 'esm') {
     ownKeys(translatorTraceMap).forEach((key) => {
       if (!Object.prototype.hasOwnProperty.call(translatorTraceMap[key], ESM)) {
         (translatorTraceMap[key] as t.UnknownRecord)[ESM as never] = true;
@@ -27,9 +29,10 @@ export function resolveSettings(settings: unknown = {}): ResolvedESLintI18n2Sett
   }
 
   return {
-    translator: translatorTraceMap,
-    translatorSourceModule: merged.translatorSourceModule,
-    untranslatedChars: RegExp(merged.untranslatedChars),
+    translatorSourceModule,
+    translatorTraceMap,
+    untranslatedChars: RegExp(untranslatedChars),
+    wellknownText: wellknownText ? RegExp(wellknownText) : null,
   };
 }
 

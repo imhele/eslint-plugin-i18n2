@@ -16,6 +16,8 @@ const Translations: TranslationsType = {
     '指定翻译函数的导入来源，目前支持 CommonJS (cjs) / ECMAScript Module (esm) / Global (global) 。',
   SettingsUntranslatedChars:
     '符合此正则表达式的字符都将被视为未翻译，传入字符串会被直接转为正则表达式。',
+  SettingsWellknownText:
+    '符合此正则表达式的文本将被认为无需翻译，传入字符串会被直接转为正则表达式。',
 };
 
 export default Translations;

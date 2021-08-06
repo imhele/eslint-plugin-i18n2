@@ -25,6 +25,9 @@ const Locales: TranslationsType = {
   SettingsUntranslatedChars:
     'The characters that meet this regular expression will be regarded as untranslated, ' +
     'and the incoming string will be directly converted into a regular expression.',
+  SettingsWellknownText:
+    'The text that meets this regular expression will be considered as no need for translation, ' +
+    'and the incoming string will be directly converted into a regular expression.',
 };
 
 export default Locales;

@@ -18,6 +18,7 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
   },
   create(context) {
     const settings = resolveSettings(context.settings.i18n2);
+    const { translatorSourceModule, translatorTraceMap } = settings;
 
     return {
       'Program:exit'(): void {
@@ -29,12 +30,12 @@ export const NoTopLevelTranslation: Rule.RuleModule = {
         });
 
         const references = (() => {
-          if (settings.translatorSourceModule === 'cjs') {
-            return tracker.iterateCjsReferences(settings.translator);
-          } else if (settings.translatorSourceModule === 'esm') {
-            return tracker.iterateEsmReferences(settings.translator);
+          if (translatorSourceModule === 'cjs') {
+            return tracker.iterateCjsReferences(translatorTraceMap);
+          } else if (translatorSourceModule === 'esm') {
+            return tracker.iterateEsmReferences(translatorTraceMap);
           } else {
-            return tracker.iterateGlobalReferences(settings.translator);
+            return tracker.iterateGlobalReferences(translatorTraceMap);
           }
         })();
 

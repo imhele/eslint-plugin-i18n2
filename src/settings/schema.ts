@@ -17,8 +17,12 @@ export const SettingsSchema: JSONSchema4 = {
       description: Translations.SettingsTranslatorSourceModule,
     },
     untranslatedChars: {
-      type: 'string',
+      type: ['string', 'object'],
       description: Translations.SettingsUntranslatedChars,
+    },
+    wellknownText: {
+      type: ['string', 'object', 'null'],
+      description: Translations.SettingsWellknownText,
     },
   },
 };
