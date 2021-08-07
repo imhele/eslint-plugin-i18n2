@@ -27,7 +27,7 @@ specifiers:
   eslint-plugin-eslint-plugin: ^3.5.3
   eslint-plugin-import: ^2.22.1
   eslint-plugin-prettier: ^3.3.1
-  eslint-utils2: ^3.1.0-alpha.1
+  eslint-utils2: ^3.1.0-rc.1
   html-entities: ^2.3.2
   iter-tools: ^7.1.3
   json-schema: ^0.3.0
@@ -42,7 +42,7 @@ specifiers:
 
 dependencies:
   '@babel/runtime': 7.14.8
-  eslint-utils2: 3.1.0-alpha.1_eslint@7.32.0
+  eslint-utils2: 3.1.0-rc.1_eslint@7.32.0
   html-entities: 2.3.2
   iter-tools: 7.1.3
   json-schema: 0.3.0
@@ -4661,8 +4661,8 @@ packages:
       eslint-visitor-keys: 2.1.0
     dev: true
 
-  /eslint-utils2/3.1.0-alpha.1_eslint@7.32.0:
-    resolution: {integrity: sha512-R4vkVdMqPHiMHkGhde683pXyqunN+7MqDFgj10dMG3lhx5m3yAug5J86OoCS0Pqka4ZmEdpj+iJIPv51SCH6ow==}
+  /eslint-utils2/3.1.0-rc.1_eslint@7.32.0:
+    resolution: {integrity: sha512-LLNrp6RThsFuZq5vOOIqXEQpdj8ud1baHAlkryICMqCJSkKCxcdkkZ7vgYUVxPvcO0cB99xtoJKxdX1Dsetxtw==}
     engines: {node: ^10.0.0 || ^12.0.0 || >= 14.0.0}
     peerDependencies:
       eslint: '>=5'
